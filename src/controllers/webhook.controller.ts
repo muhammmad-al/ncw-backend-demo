@@ -14,7 +14,19 @@ export class WebhookController {
 
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
-      const { type, timestamp } = req.body;
+      // Map Fireblocks V2 webhook eventType to legacy V1 type strings the rest of this handler expects.
+      const v2ToV1: Record<string, string> = {
+        "transaction.created": "TRANSACTION_CREATED",
+        "transaction.status.updated": "TRANSACTION_STATUS_UPDATED",
+        "transaction.approval_status.updated": "TRANSACTION_APPROVAL_STATUS_UPDATED",
+        "embedded_wallet.asset.balance_updated": "END_USER_WALLET_BALANCE_UPDATE",
+        "embedded_wallet.device.message": "NCW_DEVICE_MESSAGE",
+        "embedded_wallet.transaction.signing": "NCW_DEVICE_MESSAGE",
+        "ncw.device.message": "NCW_DEVICE_MESSAGE",
+      };
+      const type =
+        req.body.type ?? v2ToV1[req.body.eventType] ?? req.body.eventType;
+      const timestamp = req.body.timestamp ?? req.body.createdAt;
       console.log(
         `received webhook, type: ${type} timestamp: ${timestamp} body: ${JSON.stringify(
           req.body,

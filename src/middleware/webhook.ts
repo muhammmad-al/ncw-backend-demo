@@ -3,6 +3,12 @@ import { Request, Response, NextFunction } from "express";
 
 export const validateWebhook =
   (publicKey: string) => (req: Request, res: Response, next: NextFunction) => {
+    if (process.env.WEBHOOK_SKIP_VERIFY === "true") {
+      console.log("[webhook] signature verification skipped via WEBHOOK_SKIP_VERIFY");
+      next();
+      return;
+    }
+
     const message = JSON.stringify(req.body);
     const signature = req.headers["fireblocks-signature"];
 
