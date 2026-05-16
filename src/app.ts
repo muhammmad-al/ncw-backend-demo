@@ -11,6 +11,7 @@ import { Clients } from "./interfaces/Clients";
 import { errorHandler } from "./middleware/errorHandler";
 import { createPassphraseRoute } from "./routes/passphrase.route";
 import { createWalletRoute } from "./routes/wallet.route";
+import { createMigrationRoute } from "./routes/migration.route";
 import { Server as SocketIOServer } from "socket.io";
 import { Device } from "./model/device";
 import { jwtVerify } from "jose";
@@ -33,6 +34,7 @@ function createApp(
     createDeviceRoute(clients);
   const passphraseRoute = createPassphraseRoute();
   const webhookRoute = createWebhook(clients, webhookPublicKey);
+  const migrationRoute = createMigrationRoute();
   const userContoller = new UserController(new UserService());
 
   const app: Express = express();
@@ -54,6 +56,7 @@ function createApp(
   app.use("/api/passphrase", validateUser, passphraseRoute);
   app.use("/api/devices", validateUser, deviceRoute);
   app.use("/api/wallets", validateUser, walletRoute);
+  app.use("/api/migration", validateUser, migrationRoute);
   app.use("/api/webhook", webhookRoute);
 
   app.use(errorHandler);
