@@ -1,6 +1,6 @@
-// FOR SECURITY RESEARCH ONLY — NOT FOR PRODUCTION USE
+// Proof of concept — demonstrates the migration audit model; not production-hardened.
 //
-// This service records key-migration intent and outcomes for demo/audit purposes.
+// This service records key-migration intent and outcomes for audit purposes.
 // It deliberately never accepts or returns private-key material. The actual
 // Full Key Takeover is performed client-side by the NCW JS SDK (which runs the
 // MPC reconstruction in the browser), so the server is only an audit witness.
@@ -23,6 +23,10 @@ export interface MigrationCompleteRecord {
 }
 
 export class MigrationService {
+  // NOTE: demo-only storage. Audit records live in memory and are lost on
+  // restart / not shared across instances. A production deployment would
+  // persist these to a durable, tamper-evident store (e.g. an append-only
+  // table or audit log) instead of these in-process collections.
   private readonly active = new Map<string, MigrationStartRecord>();
   private readonly completed: MigrationCompleteRecord[] = [];
 

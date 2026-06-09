@@ -1,4 +1,4 @@
-// FOR SECURITY RESEARCH ONLY — NOT FOR PRODUCTION USE
+// Proof of concept — demonstrates the migration audit model; not production-hardened.
 import { Request, Response, NextFunction } from "express";
 import { MigrationService } from "../services/migration.service";
 
